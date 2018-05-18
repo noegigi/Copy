@@ -7,6 +7,7 @@ public class Node : MonoBehaviour {
 
     public bool isConnected = false;
 
+    //the node it is currently connected to
     public Node connection = null;
 
     public PathTile parent;
@@ -23,19 +24,23 @@ public class Node : MonoBehaviour {
         CalculatePath();
 	}
 
+    //Connect a node to this 
     public void Connect(Node node)
     {
         connection = node;
         isConnected = true;
     }
 
+    //Calculate the connections of this node
     void CalculatePath()
     {
+        //Raycast from the camera on the position of this node
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(transform.position);
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         RaycastHit[] hits = Physics.RaycastAll(ray,1000,layer);
         if (hits.Length > 1)
         {
+            //if it finds more than one node, connect them
             Node firstNode = hits[0].transform.GetComponent<Node>();
             Node secondNode = hits[1].transform.GetComponent<Node>();
             if (firstNode.parent.transform.parent!=secondNode.parent.transform.parent)
@@ -54,6 +59,8 @@ public class Node : MonoBehaviour {
             
     }
 
+    //Used to debug
+    //Show the node position and connection
     private void OnDrawGizmos()
     {
         float size = GetComponent<SphereCollider>().radius;

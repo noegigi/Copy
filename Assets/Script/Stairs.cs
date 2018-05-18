@@ -14,6 +14,7 @@ public class Stairs : PathTile {
         PlaceNode();
     }
 
+    //Place the node to form a stair
     virtual protected void PlaceNode()
     {
         Vector3 size = Vector3.one/2;

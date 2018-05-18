@@ -14,6 +14,7 @@ public class NormalTile : PathTile {
         PlaceNode();
     }
 
+    //Create the nodes and place them on the four point of the face
     virtual protected void PlaceNode()
     {
         Vector3 size = Vector3.one/2;
@@ -54,6 +55,7 @@ public class NormalTile : PathTile {
         isWalkable = true;
     }
 
+    //Show position and connection in Debug
 	void OnDrawGizmos () {
         Vector3 position = transform.localPosition;
         Vector3 size = Vector3.one/2;

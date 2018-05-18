@@ -12,20 +12,23 @@ public class PathTile : MonoBehaviour {
 
     protected Node right = null;
 
+    //Distance from the camera to the tile
     public float distance = 0;
 
     void Start()
     {
         UpdateDistance();
+        //Add the function to update the path to the rotable object
         Rotate.updatePath += UpdateDistance;
     }
 
+    //Calculate the distance
     void UpdateDistance()
     {
         distance = Vector3.Distance(Camera.main.transform.position, transform.position);
     }
 
-    public PathTile GetFirstConnectedNode(PathTile current)
+    /*public PathTile GetFirstConnectedNode(PathTile current)
     {
         if(forward!=null)
             if (forward.isConnected)
@@ -52,13 +55,19 @@ public class PathTile : MonoBehaviour {
                     return backward.connection.parent;
             }
         return null;
-    }
+    }*/
 
+    //Get a position as if the tile where on the same level as the others
+    //Used to get the position relative to other tiles
     public Vector3 GetPlanarPosition()
     {
-        return Vector3.one;
+        Vector3 camPosition = Camera.main.transform.position;
+        Vector3 position = transform.position;
+        position -= camPosition;
+        return position;
     }
 
+    //get a random node to move randomly
     public PathTile GetRandomConnectedNode()
     {
         if (forward.isConnected)

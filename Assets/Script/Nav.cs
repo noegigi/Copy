@@ -5,13 +5,16 @@ using DigitalRuby.Tween;
 
 public class Nav : MonoBehaviour {
 
+    //node the player is currently on
     PathTile currentNode;
 
     PathTile nextNode;
 
+    //Target node the player wants to move to
     PathTile targetNode = null;
 
-    Coroutine move;
+    //Path from the current node to the target node
+    Queue<PathTile> path;
 
     [SerializeField]
     float speed = 1;
@@ -21,6 +24,7 @@ public class Nav : MonoBehaviour {
 
     private void Start()
     {
+        //Get the current node and set the player in position on it
         RaycastHit hitInfo;
         if(Physics.Raycast(transform.position,transform.up*-1,out hitInfo, 1))
         {
@@ -29,68 +33,57 @@ public class Nav : MonoBehaviour {
             position.y += 1;
             transform.position = position;
             nextNode = currentNode.GetRandomConnectedNode();
-            //StartCoroutine("MovingCoroutine");
+            StartCoroutine("MovingCoroutine");
         }
     }
 
     private void Update()
     {
+        //When the player click on a path tile, get the target node and search a path to it
         if (Input.GetButtonDown("Fire1"))
         {
             RaycastHit hit;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition),out hit,1000,layer))
             {
-                targetNode = hit.transform.GetComponentInChildren<NormalTile>();
-                //Debug.Log(targetNode);
+                /*targetNode = hit.transform.GetComponentInChildren<NormalTile>();
+                path = null;
                 if (move != null) StopCoroutine(move);
-                move = StartCoroutine(MoveAlongPath(FindPath()));
+                FindPath();
+                move = StartCoroutine(MoveAlongPath());*/
             }
         }
     }
 
-    IEnumerator MoveAlongPath(List<PathTile> path)
+    /*IEnumerator MoveAlongPath()
     {
-        for(int i=0;i<path.Count-1;i++)
-        {
-            PathTile toCompare = (i < path.Count - 3) ?path[i+2]:path[i+1];
+        int i = 0;
+        PathTile tile;
+        while () {
+            PathTile toCompare = (i < path.Count - 3) ? path[i + 2] : path[i + 1];
             if (toCompare.distance < path[i].distance)
             {
-                //Debug.Log("oui :" + nextNode.distance + " / " + currentNode.distance);
-                Vector3 pos = path[i+2].transform.position;
+                Vector3 pos = path[i + 2].transform.position;
                 pos.z -= 1;
                 pos.y += 1;
                 //transform.position = pos;
             }
-            Vector3 position = path[i+1].transform.position;
+            Vector3 position = path[i + 1].transform.position;
             position.y += 1;
-            TweenFactory.Tween("moving", transform.position, position, speed, TweenScaleFunctions.Linear, (t) => {
+            TweenFactory.Tween("moving", transform.position, position, speed, TweenScaleFunctions.Linear, (t) =>
+            {
                 transform.position = t.CurrentValue;
-            },(t)=>{
+            }, (t) =>
+            {
                 currentNode = path[i];
             });
-            Debug.Log(i);
             yield return new WaitForSeconds(speed);
         }
         currentNode = path[path.Count-1];
-    }
+    }*/
 
-    List<PathTile> FindPath()
+    Queue<PathTile> FindPath()
     {
-        List<PathTile> path = new List<PathTile>();
-        path.Add(currentNode);
-        int cpt = 0;
-        while (path[path.Count-1]!=targetNode&&cpt<50)
-        {
-            cpt++;
-            //Debug.Log(path[path.Count-1]+" : "+targetNode);
-            PathTile next = path[path.Count - 1].GetFirstConnectedNode((path.Count == 1) ? currentNode : path[path.Count - 2]);
-            if (next!=null)
-            {
-                path.Add(next);
-            }
-            
-        }
-        Debug.Log(path.Count);
+        //TODO
         return path;
     }
 
@@ -99,14 +92,6 @@ public class Nav : MonoBehaviour {
         while (currentNode!=targetNode)
         {
             yield return new WaitForSeconds(speed);
-            if (nextNode.distance < currentNode.distance)
-            {
-                Debug.Log("oui :" + nextNode.distance + " / " + currentNode.distance);
-                Vector3 pos = nextNode.transform.position;
-                pos.z -= 1;
-                pos.y += 1;
-                transform.position = pos;
-            }
             currentNode = nextNode;
             Vector3 position = currentNode.transform.position;
             position.y += 1;
